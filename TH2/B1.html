@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact Form</title>
+  <style>
+    :root{
+      --border:#cfcfcf;
+      --bg:#f7f7f7;
+      --text:#222;
+      --muted:#777;
+      --btn:#4da3d9;
+      --btn-hover:#3c93c9;
+    }
+
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:#fff;
+      color:var(--text);
+    }
+
+    .wrap{
+      max-width: 860px;
+      margin: 40px auto;
+      padding: 26px 28px;
+      border: 2px solid #2f2f2f;
+      background: #fff;
+      box-sizing: border-box;
+    }
+
+    h2{
+      margin: 0 0 18px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .row{
+      display:flex;
+      gap: 26px;
+      margin-bottom: 14px;
+    }
+
+    .col{ flex:1; }
+
+    input, textarea{
+      width:100%;
+      box-sizing:border-box;
+      border:1px solid var(--border);
+      padding: 12px 14px;
+      font-size: 14px;
+      outline: none;
+      background: #fff;
+      border-radius: 2px;
+    }
+
+    input::placeholder, textarea::placeholder{
+      color:#9a9a9a;
+    }
+
+    input:focus, textarea:focus{
+      border-color:#9fbad0;
+      box-shadow: 0 0 0 2px rgba(77,163,217,.15);
+    }
+
+    .full{
+      margin-bottom: 14px;
+    }
+
+    textarea{
+      min-height: 260px;
+      resize: vertical;
+    }
+
+    .actions{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      margin-top: 12px;
+      gap: 16px;
+    }
+
+    button{
+      border:1px solid #2a87bf;
+      background: var(--btn);
+      color:#fff;
+      padding: 10px 18px;
+      font-size: 14px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    button:hover{
+      background: var(--btn-hover);
+    }
+
+    .note{
+      color: var(--muted);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    /* Responsive */
+    @media (max-width: 680px){
+      .row{ flex-direction: column; gap: 14px; }
+      .note{ white-space: normal; text-align:right; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h2>Get in touch with us by filling contact form below</h2>
+
+    <form>
+      <div class="row">
+        <div class="col">
+          <input type="text" placeholder="* Enter your full name" required />
+        </div>
+        <div class="col">
+          <input type="email" placeholder="* Enter your email address" required />
+        </div>
+      </div>
+
+      <div class="full">
+        <input type="text" placeholder="Enter your subject" />
+      </div>
+
+      <div class="full">
+        <textarea placeholder="* Your message here..." required></textarea>
+      </div>
+
+      <div class="actions">
+        <button type="submit">Send message</button>
+        <div class="note">* Please fill all required form field, thanks!</div>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

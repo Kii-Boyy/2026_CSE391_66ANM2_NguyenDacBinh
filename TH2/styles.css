@@ -1,0 +1,231 @@
+
+header {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 22px;
+}
+
+#page-logo a {
+  font-family: "Oleo Script", cursive;
+  font-size: 32px;
+  color: #ffd34d;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+nav ul {
+  display: flex;
+  gap: 12px;
+}
+
+nav li {
+  position: relative;
+}
+
+nav li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: #111;
+  border-radius: 50%;
+
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+nav a {
+  display: inline-block;
+  font-family: "Raleway", sans-serif;
+  font-size: 11px;
+  color: #ffd34d;
+
+  border: 1px solid #ffd34d;
+  border-radius: 3px;
+
+  padding: 4px 12px 4px 22px; 
+  background: rgba(0, 0, 0, 0.2);
+}
+
+#hero {
+  height: 320px;
+  background: url("assets/extra-files/ocean.jpg") center/cover no-repeat;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding-top: 54px; 
+  position: relative;
+}
+
+#hero::before,
+#hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: #ff4fd8;
+}
+#hero::before {
+  top: 0;
+}
+#hero::after {
+  bottom: 0;
+}
+
+#hero-content {
+  width: 560px;
+  max-width: 88%;
+  text-align: center;
+
+  background: rgba(35, 35, 35, 0.75);
+  padding: 26px 34px;
+  border-radius: 3px;
+}
+
+#hero-content h1 {
+  margin: 0 0 8px 0;
+  font-family: "Raleway", sans-serif;
+  color: #fff;
+  font-size: 22px;
+  text-transform: uppercase;
+}
+
+#hero-content p {
+  margin: 0 0 12px 0;
+  color: #dedede;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+#hero-content a {
+  display: inline-block;
+  background: #ffd34d;
+  color: #111;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 2px;
+}
+
+#highlights {
+  background: #cfefff;
+  padding: 18px 18px 26px 18px;
+  position: relative;
+}
+
+#highlights::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 4px;
+  background: #ff4fd8;
+}
+
+#highlights h2 {
+  margin: 10px 0 14px 0;
+  text-align: center;
+  font-family: "Raleway", sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #2b2b2b;
+}
+
+#destinations {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+}
+
+.destination {
+  width: 300px;
+  background: #fff;
+  border-radius: 6px;
+  padding: 10px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+}
+
+.destination img {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 6px;
+  display: block;
+}
+
+.destination p {
+  margin: 8px 0 0 0;
+  text-align: center;
+  font-size: 9px;
+  text-transform: uppercase;
+  color: #3a3a3a;
+}
+
+footer {
+  background: #111;
+  padding: 28px 0;
+  position: relative;
+}
+
+footer::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 4px;
+  background: #ff4fd8;
+}
+
+footer ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 26px;
+}
+
+footer a {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+footer img {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  #destinations {
+    flex-direction: column;
+    align-items: center;
+  }
+  .destination {
+    width: min(520px, 92%);
+  }
+  .destination img {
+    height: 160px;
+  }
+}
