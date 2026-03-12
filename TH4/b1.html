@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bảng Điểm Sinh Viên - Tìm kiếm & Lọc</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: #f5f7fa;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .form-group,
+    .filter-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    input,
+    select,
+    button {
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    #hoTen {
+      flex: 2;
+      min-width: 220px;
+    }
+
+    #diem {
+      flex: 1;
+      min-width: 120px;
+    }
+
+    #searchInput {
+      flex: 2;
+      min-width: 220px;
+    }
+
+    #filterLoai {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    button {
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #e9ecef;
+    }
+
+    th.sortable {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    th.sortable:hover {
+      background-color: #dce3ea;
+    }
+
+    .yeu {
+      background-color: yellow;
+    }
+
+    .btn-delete {
+      background-color: #dc3545;
+      padding: 6px 12px;
+      border-radius: 4px;
+    }
+
+    .btn-delete:hover {
+      background-color: #a71d2a;
+    }
+
+    .stats {
+      margin-top: 15px;
+      font-size: 17px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .no-result {
+      text-align: center;
+      color: red;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <h2>Quản Lý Điểm Sinh Viên</h2>
+
+  <!-- Khu vực thêm sinh viên -->
+  <div class="form-group">
+    <input type="text" id="hoTen" placeholder="Nhập họ tên sinh viên" />
+    <input
+      type="number"
+      id="diem"
+      placeholder="Nhập điểm (0 - 10)"
+      min="0"
+      max="10"
+      step="0.1"
+    />
+    <button id="btnThem">Thêm</button>
+  </div>
+
+  <!-- Khu vực tìm kiếm và lọc -->
+  <div class="filter-group">
+    <input type="text" id="searchInput" placeholder="Tìm kiếm theo họ tên..." />
+    <select id="filterLoai">
+      <option value="Tất cả">Tất cả</option>
+      <option value="Giỏi">Giỏi</option>
+      <option value="Khá">Khá</option>
+      <option value="Trung bình">Trung bình</option>
+      <option value="Yếu">Yếu</option>
+    </select>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Họ tên</th>
+        <th id="sortDiem" class="sortable">Điểm</th>
+        <th>Xếp loại</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody id="studentTableBody"></tbody>
+  </table>
+
+  <div class="stats" id="stats">
+    Tổng số sinh viên: 0 | Điểm trung bình: 0.00
+  </div>
+
+  <script>
+    const hoTenInput = document.getElementById("hoTen");
+    const diemInput = document.getElementById("diem");
+    const btnThem = document.getElementById("btnThem");
+
+    const searchInput = document.getElementById("searchInput");
+    const filterLoai = document.getElementById("filterLoai");
+    const sortDiem = document.getElementById("sortDiem");
+
+    const tbody = document.getElementById("studentTableBody");
+    const stats = document.getElementById("stats");
+
+    let students = [];
+    let filteredStudents = [];
+    let sortOrder = null; // null | "asc" | "desc"
+
+    function xepLoai(diem) {
+      if (diem >= 8.5) return "Giỏi";
+      if (diem >= 7.0) return "Khá";
+      if (diem >= 5.0) return "Trung bình";
+      return "Yếu";
+    }
+
+    function capNhatThongKe() {
+      const tongSV = students.length;
+      let diemTB = 0;
+
+      if (tongSV > 0) {
+        const tongDiem = students.reduce((sum, sv) => sum + sv.diem, 0);
+        diemTB = tongDiem / tongSV;
+      }
+
+      stats.textContent = `Tổng số sinh viên: ${tongSV} | Điểm trung bình: ${diemTB.toFixed(2)}`;
+    }
+
+    function renderTable() {
+      tbody.innerHTML = "";
+
+      if (filteredStudents.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="no-result">Không có kết quả</td>
+          </tr>
+        `;
+        return;
+      }
+
+      filteredStudents.forEach((sv, index) => {
+        const tr = document.createElement("tr");
+
+        if (sv.diem < 5) {
+          tr.classList.add("yeu");
+        }
+
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${sv.hoTen}</td>
+          <td>${sv.diem.toFixed(1)}</td>
+          <td>${xepLoai(sv.diem)}</td>
+          <td>
+            <button class="btn-delete" data-id="${sv.id}">Xóa</button>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function updateSortIcon() {
+      if (sortOrder === "asc") {
+        sortDiem.textContent = "Điểm ▲";
+      } else if (sortOrder === "desc") {
+        sortDiem.textContent = "Điểm ▼";
+      } else {
+        sortDiem.textContent = "Điểm";
+      }
+    }
+
+    function applyFilters() {
+      const keyword = searchInput.value.trim().toLowerCase();
+      const loaiDuocChon = filterLoai.value;
+
+      filteredStudents = students.filter((sv) => {
+        const matchName = sv.hoTen.toLowerCase().includes(keyword);
+        const loai = xepLoai(sv.diem);
+        const matchLoai = loaiDuocChon === "Tất cả" || loai === loaiDuocChon;
+        return matchName && matchLoai;
+      });
+
+      if (sortOrder === "asc") {
+        filteredStudents.sort((a, b) => a.diem - b.diem);
+      } else if (sortOrder === "desc") {
+        filteredStudents.sort((a, b) => b.diem - a.diem);
+      }
+
+      updateSortIcon();
+      renderTable();
+      capNhatThongKe();
+    }
+
+    function themSinhVien() {
+      const hoTen = hoTenInput.value.trim();
+      const diem = parseFloat(diemInput.value);
+
+      if (hoTen === "") {
+        alert("Họ tên không được để trống!");
+        hoTenInput.focus();
+        return;
+      }
+
+      if (isNaN(diem) || diem < 0 || diem > 10) {
+        alert("Điểm phải là số từ 0 đến 10!");
+        diemInput.focus();
+        return;
+      }
+
+      const sv = {
+        id: Date.now(),
+        hoTen: hoTen,
+        diem: diem
+      };
+
+      students.push(sv);
+      applyFilters();
+
+      hoTenInput.value = "";
+      diemInput.value = "";
+      hoTenInput.focus();
+    }
+
+    btnThem.addEventListener("click", themSinhVien);
+
+    diemInput.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        themSinhVien();
+      }
+    });
+
+    searchInput.addEventListener("input", applyFilters);
+    filterLoai.addEventListener("change", applyFilters);
+
+    sortDiem.addEventListener("click", function () {
+      if (sortOrder === null || sortOrder === "desc") {
+        sortOrder = "asc";
+      } else {
+        sortOrder = "desc";
+      }
+      applyFilters();
+    });
+
+    tbody.addEventListener("click", function (event) {
+      if (event.target.classList.contains("btn-delete")) {
+        const id = Number(event.target.getAttribute("data-id"));
+        students = students.filter((sv) => sv.id !== id);
+        applyFilters();
+      }
+    });
+
+    applyFilters();
+  </script>
+</body>
+</html>
